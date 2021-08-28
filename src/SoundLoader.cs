@@ -3,7 +3,10 @@ using System.IO;
 
 namespace Zenseless.Sound
 {
-	public class SoundLoader
+	/// <summary>
+	/// 
+	/// </summary>
+	public static class SoundLoader
 	{
 		/// <summary>
 		/// Auto convert loader that tries different sound formats

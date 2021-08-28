@@ -14,6 +14,9 @@ namespace Zenseless.Sound
 	/// </summary>
 	public class SoundMixer : Disposable
 	{
+		/// <summary>
+		/// The assigned event handlers will be called each time a sound has ended. Can be used to implement looping.
+		/// </summary>
 		public event EventHandler<ISound>? SoundEnded;
 
 		/// <summary>
@@ -33,6 +36,11 @@ namespace Zenseless.Sound
 			_mixer.MixerInputEnded += MixerInputEnded;
 		}
 
+		/// <summary>
+		/// Check if currently the given sound is playing.
+		/// </summary>
+		/// <param name="sound">instance of the sound to check</param>
+		/// <returns></returns>
 		public bool IsPlaying(ISound sound) => _inputSounds.ContainsValue(sound);
 
 		/// <summary>
@@ -56,7 +64,7 @@ namespace Zenseless.Sound
 		public void Play(ISound sound, float volume = 1f)
 		{
 			sound.Rewind();
-			var sampleChannel = new SampleChannel(sound.WaveStream, false)
+			var sampleChannel = new SampleChannel(sound.WaveProvider, false)
 			{
 				Volume = volume
 			};
@@ -102,7 +110,7 @@ namespace Zenseless.Sound
 
 		private void MixerInputEnded(object? sender, SampleProviderEventArgs e)
 		{
-			if(_inputSounds.TryGetValue(e.SampleProvider, out var wave))
+			if (_inputSounds.TryGetValue(e.SampleProvider, out var wave))
 			{
 				SoundEnded?.Invoke(this, wave);
 				_inputSounds.Remove(e.SampleProvider);
